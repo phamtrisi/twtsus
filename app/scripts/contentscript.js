@@ -3,10 +3,10 @@
 (function($) {
 	var $tweetForm = $('form.tweet-form'),
 		$tweetBoxEditable = $('#tweet-box-home-timeline'),
-		$tweetContentTextarea = $tweetForm.find('textarea.tweet-box-shadow'),
-		$originalTweetButton = $tweetForm.find('.js-tweet-btn, .tweet-btn'),
+		$tweetContentTextarea = $('textarea.tweet-box-shadow'),
+		$originalTweetButton = $('.tweet-btn:not(#global-new-tweet-button)'),
 		$newTweetButton = $('<button/>', {
-			html: 'TwtsUs',
+			html: 'Tweet',
 			class: 'btn primary-btn'
 		}),
 		$specialLinks,
@@ -17,10 +17,12 @@
 
 	// Attach event handlers for this new button
 	$newTweetButton.on('click', function(evt) {
+		console.log('clicked');
 		var originalTweet = $tweetContentTextarea.val(),
 			toTweet = originalTweet;
 		
 		if (originalTweet.length > 140) {
+			console.log('here');
 
 			// Add to firebase first
 			fetch(fireBaseUrl + '.json', {
@@ -74,7 +76,6 @@
 				urlTokens = url.split('/'),
 				fireBaseKey = urlTokens[urlTokens.length - 1];
 
-			console.log(fireBaseKey);
 			fetch([fireBaseUrl, '/', fireBaseKey, '.json'].join(''))
 				.then(function(response) {
 					return response.json();
