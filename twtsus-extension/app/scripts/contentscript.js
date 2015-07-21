@@ -24,7 +24,8 @@
     $tweetButtonContainer = $(TWITTER_NAMINGS.TWEET_BUTTON_CONTAINER),
     FIREBASE_URL = 'https://twtsus.firebaseio.com/tweets',
     APP_URL_HOST = 'twts.us',
-    TRANSLATE_TWEETS_EVERY = 1000, // Translate tweets every 1s
+    APP_URL = 'https://twtsus.herokuapp.com',
+    TRANSLATE_TWEETS_EVERY = 3000, // Translate tweets every 1s
     MAX_CHARS_LIMIT = 140,
     tweetsTranslateInterval,
     $specialLinks;
@@ -54,12 +55,12 @@
    * Post original tweet to our own service, return a promise
    */
   function postOriginalTweet(tweet) {
-    return fetch(FIREBASE_URL + '.json', {
+    return fetch(APP_URL, {
       method: 'post',
-      body: JSON.stringify({
-        "twitterUserId": tweet.twitterUserId,
-        "content": tweet.content
-      })
+      body: {
+        twitterUserId: 1234,
+        content: 'this is a test content'
+      }
     });
   }
 
@@ -148,10 +149,12 @@
           urlTokens = url.split('/'),
           fireBaseKey = urlTokens[urlTokens.length - 1];
 
-        fetch([FIREBASE_URL, '/', fireBaseKey, '.json'].join(''))
+        fetch([APP_URL, '/', fireBaseKey].join(''))
           .then(JSONResponse)
           .then(function(originalTweet) {
-            $tweetText.html(originalTweet.content);
+            if (originalTweet && originalTweet.content) {
+              $tweetText.html(originalTweet.content);
+            }
           });
       });
     }, TRANSLATE_TWEETS_EVERY);
