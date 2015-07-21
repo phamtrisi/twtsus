@@ -2,6 +2,7 @@
   "name": "twtsus",
   "version": "0.0.1",
   "manifest_version": 2,
+  "short_description": "Tweet as long as you'd like",
   "description": "Tweet as long as you'd like",
   "icons": {
     "16": "images/icon-16.png",
@@ -9,10 +10,7 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": [
-      "scripts/chromereload.js",
-      "scripts/background.js"
-    ]
+    "scripts": []
   },
   "omnibox": {
     "keyword": "twtsus"
