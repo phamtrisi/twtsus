@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "twtsus",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Tweet as long as you like",
+    "description": "The description of the application"
+  }
+}
