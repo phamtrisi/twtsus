@@ -38,11 +38,18 @@ router.get('/:id', function(req, res, next) {
     })
     .then(function(tweet) {
       if (tweet && tweet.content) {
-        res.json({
-          content: tweet.content
-        });
-      }
-      else {
+        if (req.xhr) {
+          res.json({
+            content: tweet.content
+          });
+        }
+        else {
+          res.render('tweet', {
+            tweet: tweet.content
+          });
+        }
+
+      } else {
         res.json(null);
       }
     });

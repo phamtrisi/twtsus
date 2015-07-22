@@ -6,6 +6,7 @@
   var TWITTER_NAMINGS = {
     TWEET_FORM: '.tweet-form',
     TWEET_BOX_HOME_TIMELINE: '#tweet-box-home-timeline',
+    TWEET_BOX: '.tweet-box',
     GLOBAL_NEW_TWEET_BUTTON: '#global-new-tweet-button',
     ORIGINAL_TWEET_BUTTON: '.tweet-btn:not(#global-new-tweet-button)',
     TWEET_BUTTON_CONTAINER: '.tweet-button',
@@ -13,15 +14,17 @@
   };
 
 
-  var $tweetForm = $(TWITTER_NAMINGS.TWEET_FORM),
-    $tweetBoxEditable = $(TWITTER_NAMINGS.TWEET_BOX_HOME_TIMELINE),
-    $tweetContentTextarea = $(TWITTER_NAMINGS.TWEET_TEXTAREA_SHADOW),
-    $originalTweetButton = $(TWITTER_NAMINGS.ORIGINAL_TWEET_BUTTON),
+  var $tweetForm,
+    $tweetBoxEditable,
+    $tweetContentTextarea,
+    $originalTweetButton,
+    $originalTweetButtons = $(TWITTER_NAMINGS.ORIGINAL_TWEET_BUTTON),
     $newTweetButton = $('<button/>', {
       html: 'Tweet',
       class: 'btn primary-btn'
     }),
-    $tweetButtonContainer = $(TWITTER_NAMINGS.TWEET_BUTTON_CONTAINER),
+    $tweetButtonContainer,
+    $tweetButtonContainers = $(TWITTER_NAMINGS.TWEET_BUTTON_CONTAINER),
     FIREBASE_URL = 'https://twtsus.firebaseio.com/tweets',
     APP_URL_HOST = 'twts.us',
     APP_URL = 'https://twtsus.herokuapp.com',
@@ -73,12 +76,23 @@
 
     // Attach event handlers for this new button
     $newTweetButton.on('click', function(evt) {
-      var originalTweet = $tweetContentTextarea.val(),
-        modifiedTweet = originalTweet,
-        tweet = {
-          twitterUserId: 1234,
-          content: originalTweet
-        };
+      var $this = $(this),
+        originalTweet,
+        modifiedTweet,
+        tweet;
+
+      $tweetForm = $this.parents(TWITTER_NAMINGS.TWEET_FORM);
+      $tweetBoxEditable = $tweetForm.find(TWITTER_NAMINGS.TWEET_BOX);
+      $tweetContentTextarea = $tweetForm.find(TWITTER_NAMINGS.TWEET_TEXTAREA_SHADOW);
+      $originalTweetButton = $tweetForm.find(TWITTER_NAMINGS.ORIGINAL_TWEET_BUTTON);
+      $tweetButtonContainer = $tweetForm.find(TWITTER_NAMINGS.TWEET_BUTTON_CONTAINER);
+
+      originalTweet = $tweetContentTextarea.val();
+      modifiedTweet = originalTweet;
+      tweet = {
+        twitterUserId: 1234,
+        content: originalTweet
+      };
 
       // If the tweet is longer than MAX_CHARS_LIMIT chars, do the magic
       if (originalTweet.length > MAX_CHARS_LIMIT) {
@@ -91,10 +105,14 @@
           crossDomain: true,
           dataType: 'json',
         }).done(function(returnedTweetObj) {
+          var prefix;
+
           if (returnedTweetObj && returnedTweetObj.name) {
 
+            prefix = [' ', APP_URL_HOST, '/', returnedTweetObj.name].join('');
+
             // Truncate and add '...' and short link
-            modifiedTweet = [truncate(originalTweet, 100, true), ' ', APP_URL_HOST, '/', returnedTweetObj.name].join('');
+            modifiedTweet = [truncate(originalTweet, 140 - prefix.length, true), prefix].join('');
 
             // Update the content of tweetbox
             $tweetBoxEditable.html(modifiedTweet);
@@ -107,7 +125,7 @@
 
             // Manually trigger a click event
             // TODO high: find a more reliable way to do this
-            $newTweetButton.trigger('click');
+            $this.trigger('click');
 
           } else {
             alert('Service not working, please try again.');
@@ -129,7 +147,7 @@
   function _cleanUpOriginalUI() {
 
     // Hide the original Tweet button
-    $originalTweetButton.css('display', 'none');
+    $originalTweetButtons.css('display', 'none');
   }
 
   function _attachEventHandlers() {
@@ -140,7 +158,7 @@
   function _generateNewUIComponents() {
 
     // Add the new Tweet button to the DOM
-    $tweetButtonContainer.append($newTweetButton);
+    $tweetButtonContainers.append($newTweetButton);
 
     // Check to see if there's new tweets that need to be translated every <TRANSLATE_TWEETS_EVERY>
     tweetsTranslateInterval = setInterval(function() {
