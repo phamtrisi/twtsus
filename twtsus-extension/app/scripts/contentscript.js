@@ -25,8 +25,9 @@
     FIREBASE_URL = 'https://twtsus.firebaseio.com/tweets',
     APP_URL_HOST = 'twts.us',
     APP_URL = 'https://twtsus.herokuapp.com',
-    TRANSLATE_TWEETS_EVERY = 3000, // Translate tweets every 1s
+    TRANSLATE_TWEETS_EVERY = 1500, // Translate tweets every 1.5s
     MAX_CHARS_LIMIT = 140,
+    notWorkingFirebaseKeys = {}, // Caching firebase keys that don't work so we don't make extra calls on these again
     tweetsTranslateInterval,
     $specialLinks;
 
@@ -57,10 +58,8 @@
   function postOriginalTweet(tweet) {
     return fetch(APP_URL, {
       method: 'post',
-      body: {
-        twitterUserId: 1234,
-        content: 'this is a test content'
-      }
+      body: JSON.stringify(tweet),
+      data: tweet
     });
   }
 
@@ -84,32 +83,36 @@
       // If the tweet is longer than MAX_CHARS_LIMIT chars, do the magic
       if (originalTweet.length > MAX_CHARS_LIMIT) {
 
-        // Add to firebase first
-        postOriginalTweet(tweet)
-          .then(JSONResponse)
-          .then(function(returnedTweetObj) {
-            if (returnedTweetObj && returnedTweetObj.name) {
+        $.ajax({
+          url: APP_URL,
+          method: 'POST',
+          data: tweet,
+          cache: true,
+          crossDomain: true,
+          dataType: 'json',
+        }).done(function(returnedTweetObj) {
+          if (returnedTweetObj && returnedTweetObj.name) {
 
-              // Truncate and add '...' and short link
-              modifiedTweet = [truncate(originalTweet, 100, true), ' ', APP_URL_HOST, '/', returnedTweetObj.name].join('');
+            // Truncate and add '...' and short link
+            modifiedTweet = [truncate(originalTweet, 100, true), ' ', APP_URL_HOST, '/', returnedTweetObj.name].join('');
 
-              // Update the content of tweetbox
-              $tweetBoxEditable.html(modifiedTweet);
+            // Update the content of tweetbox
+            $tweetBoxEditable.html(modifiedTweet);
 
-              // Focus and blur to force revalidation of MAX_CHARS_LIMIT chars
-              $tweetBoxEditable.focus().blur();
+            // Focus and blur to force revalidation of MAX_CHARS_LIMIT chars
+            $tweetBoxEditable.focus().blur();
 
-              // Update the val for hidden textarea tweet-shadow
-              $tweetContentTextarea.val(modifiedTweet);
+            // Update the val for hidden textarea tweet-shadow
+            $tweetContentTextarea.val(modifiedTweet);
 
-              // Manually trigger a click event
-              // TODO high: find a more reliable way to do this
-              $newTweetButton.trigger('click');
+            // Manually trigger a click event
+            // TODO high: find a more reliable way to do this
+            $newTweetButton.trigger('click');
 
-            } else {
-              alert('Service not working, please try again.');
-            }
-          });
+          } else {
+            alert('Service not working, please try again.');
+          }
+        });
       }
       // If not, just trigger the original tweet button
       else {
@@ -147,15 +150,25 @@
           $tweetText = $this.parents('.tweet-text'),
           url = $this.data('expanded-url'),
           urlTokens = url.split('/'),
-          fireBaseKey = urlTokens[urlTokens.length - 1];
+          fireBaseKey = urlTokens[urlTokens.length - 1],
+          isBrokenKey = notWorkingFirebaseKeys[fireBaseKey];
 
-        fetch([APP_URL, '/', fireBaseKey].join(''))
-          .then(JSONResponse)
-          .then(function(originalTweet) {
-            if (originalTweet && originalTweet.content) {
-              $tweetText.html(originalTweet.content);
-            }
-          });
+        if (!isBrokenKey) {
+          fetch([APP_URL, '/', fireBaseKey].join(''))
+            .then(JSONResponse)
+            .then(function(originalTweet) {
+              if (originalTweet && originalTweet.content) {
+                $tweetText.html(originalTweet.content);
+              } else {
+                // Cache this keys that don't work
+                notWorkingFirebaseKeys[fireBaseKey] = true;
+              }
+            });
+        } else {
+          // Cache this keys that don't work
+          notWorkingFirebaseKeys[fireBaseKey] = true;
+        }
+
       });
     }, TRANSLATE_TWEETS_EVERY);
   }
