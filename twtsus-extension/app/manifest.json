@@ -1,19 +1,14 @@
 {
-  "name": "twtsus",
-  "version": "0.0.1",
+  "name": "twts - tweet as long as you like",
+  "version": "0.0.4",
   "manifest_version": 2,
-  "short_description": "Tweet as long as you'd like",
-  "description": "Tweet as long as you'd like",
-  "icons": {
-    "16": "images/icon-16.png",
-    "128": "images/icon-128.png"
-  },
+  "description": "Tweet as long as you like. Never be bounded by 140 characters limit.",
   "default_locale": "en",
   "background": {
     "scripts": []
   },
   "omnibox": {
-    "keyword": "twtsus"
+    "keyword": "twts"
   },
   "content_scripts": [
     {

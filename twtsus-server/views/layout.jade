@@ -2,12 +2,11 @@ doctype html
 html
   head
     title= title
-    link(rel='chrome-webstore-item', href='https://chrome.google.com/webstore/detail/apdfllckaahabafndbhieahigkjlhalf')
+    link(rel='chrome-webstore-item', href='https://chrome.google.com/webstore/detail/ppcljnbmajemebacnlfeceldahlbgmno')
     link(href='http://fonts.googleapis.com/css?family=Roboto:400,300', rel='stylesheet',type='text/css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    div.centered.upsell-container
-      p Save time and see full-length tweets right on Twitter.
-      button#install-button(onclick="chrome.webstore.install()") Get Chrome extension
+    a.brand(href="/", title="Twts")
+      img(width="100", src="images/twtsus_logo.png", alt="Twts - Tweet as long as you like")
     block content
 

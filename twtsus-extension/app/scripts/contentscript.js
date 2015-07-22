@@ -156,6 +156,8 @@
   }
 
   function _generateNewUIComponents() {
+    var requestHeaders = new Headers();
+    requestHeaders.append("X-Requested-With", "XMLHttpRequest");
 
     // Add the new Tweet button to the DOM
     $tweetButtonContainers.append($newTweetButton);
@@ -172,7 +174,9 @@
           isBrokenKey = notWorkingFirebaseKeys[fireBaseKey];
 
         if (!isBrokenKey) {
-          fetch([APP_URL, '/', fireBaseKey].join(''))
+          fetch([APP_URL, '/', fireBaseKey].join(''), {
+            headers: requestHeaders
+          })
             .then(JSONResponse)
             .then(function(originalTweet) {
               if (originalTweet && originalTweet.content) {
