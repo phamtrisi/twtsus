@@ -1,7 +1,7 @@
 body, html {
   height: 100%;
   min-height: 100%;
-  padding: 0;
+  padding: 0 20px;
   margin: 0;
 }
 
@@ -14,20 +14,26 @@ a {
   color: #00B7FF;
 }
 
+.original-tweet-title {
+  color: #55ACEE;
+}
+
 .centered {
   text-align: center;
 }
 
 .upsell-container {
-  max-width: 700px;
-  border: 3px solid #E0DFDF;
-  margin: 0 auto 20px auto;
+  max-width: 500px;
+  margin: 30px auto 20px auto;
   border-radius: 11px;
-  padding: 20px;
+  padding: 20px 15px;
+  background: #f6f7f8;
+  color: #999;
 }
 
 .upsell-container p {
-  font-size: 1.4em;
+  font-size: 1em;
+  margin: 0;
 }
 
 #install-button {
@@ -36,7 +42,7 @@ a {
   height: 49px;
   padding: 0 !important;
   text-transform: uppercase;
-  margin: 10px auto 10px auto;
+  margin: 10px auto 0px auto;
   display: block;
   cursor: pointer;
   border-color: transparent;
@@ -48,17 +54,41 @@ a {
 }
 
 .tweet {
-  font-size: 1.6em;
+  font-size: 1.2em;
   line-height: 1.7em;
   max-width: 700px;
   margin: 0 auto;
+  color: #000;
+  font-weight: 400;
+}
+
+.tweet:before {
+  content: '" ';
+  font-size: 1.5em;
+}
+
+.tweet:after {
+  content: ' "';
+  font-size: 1.5em;
 }
 
 .brand {
   text-align: center;
   display: block;
   text-decoration: none;
-  margin: 0;
+  margin: 0 0 10px 0;
+  font-size: 4em;
+  font-weight: 500;
+  color: #555;
+  letter-spacing: -0.07em;
+}
+
+.brand:after {
+  content: '';
+  border-bottom: 7px solid #ddd;
+  display: block;
+  width: 40px;
+  margin: 0 auto;
 }
 
 .hero {
@@ -104,4 +134,8 @@ a {
   outline: none;
   transform: translateY(2px);
   box-shadow: 0 0 4px rgba(0,0,0,0.15);
+}
+
+footer .made-by {
+  text-align: center;
 }

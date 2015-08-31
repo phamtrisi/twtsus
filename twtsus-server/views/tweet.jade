@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  div.centered.upsell-container
-      p Save time and see full-length tweets right on Twitter.
-      button#install-button(onclick="chrome.webstore.install()") Get Chrome extension
+  h2.centered.original-tweet-title Original tweet
   p.tweet #{tweet}
+  div.centered.upsell-container
+      p Save time and see full-length tweets <br/> right on Twitter.
+      button#install-button.install-button(onclick="chrome.webstore.install()") Get Chrome extension
